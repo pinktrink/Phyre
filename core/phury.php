@@ -14,9 +14,5 @@ class Phury implements ArrayAccess{
 	public function __construct(){
 		
 	}
-	
-	public function cast(){
-		
-	}
 }
 ?>
