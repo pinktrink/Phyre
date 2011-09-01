@@ -75,8 +75,9 @@ the raw data back out of that, simply use the `_()` method.
 
 **Wait, did you say method? Then how did you use `_`?**
 
-Oh, that's easy. Any method that only *requires* one argument can be accessed as a
-property can be. Like this:
+Oh, that's easy. Any method whose procedural counterpart only *requires* one
+argument can be accessed as a property can be. Thus, `str_rot13` and `strrev`
+which only require one argument, now require no arguments. It's like this:
 
 ```php
 echo p('tavegf')->rot13->rev;
