@@ -26,7 +26,7 @@ it's replacing.
 
 In JS you can simply do this:
 
-```JS
+```javascript
 var foo = 'foo bar baz'.split(' ')[1].replace('b', 'f') + ' from hard';
 //foo = 'far from hard'
 ```
@@ -45,7 +45,7 @@ $foo = p('foo bar baz')->split(' ')->i(1)->replace('b', 'f')->_ . ' better';
 
 You can also use:
 
-```PHP
+```php
 $foo = p('foo bar baz')->split(' ')->i(1)->replace('b', 'f')->cat(' better')->_;
 //$foo = 'far better'
 ```
@@ -97,5 +97,6 @@ Or, in PHP 5.4, with short array syntax:
 ```PHP
 echo p(['a', 'b', 'c', 'd', 5]);
 //echoes 'abcd5'
+```
 
 Seems pretty easy, yes?
