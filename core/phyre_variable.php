@@ -18,7 +18,7 @@ average
 replace needs to hold preg_replace, str_replace, str_ireplace, and array_replace
 */
 
-namespace Phury;
+namespace Phyre;
 
 class variable implements \ArrayAccess{
 	const NIL = 1;
@@ -456,7 +456,13 @@ class variable implements \ArrayAccess{
 	public function filter($callback = NULL){
 		if(!$this->needs(self::ARR)) return false;
 		
-		return new self(array_filter($this->_data, $callback));
+		$fargs = array($callback);
+		
+		if(!is_null($callback)){
+			$fargs[] = $callback;
+		}
+		
+		return new self(call_user_func_array('array_filter', $fargs));
 	}
 	
 	public function flip(){
@@ -516,7 +522,21 @@ class variable implements \ArrayAccess{
 	public function keys($search_value = NULL, $strict = false){
 		if(!$this->needs(self::ARR)) return false;
 		
-		return new self(array_keys($this->_data, $search_value, $strict));
+		$fargs = array($this->_data);
+		$values = array(
+			array($search_value, NULL),
+			array($strict, false)
+		);
+		
+		foreach($values as $val){
+			if($val[1] !== $val[2]){
+				$fargs[] = $val[1];
+			}else{
+				break;
+			}
+		}
+		
+		return new self(call_user_func_array('array_keys', $fargs));
 	}
 	
 	public function map($callback, array $args = array()){
@@ -569,8 +589,13 @@ class variable implements \ArrayAccess{
 	
 	public function reduce($callback, $initial = NULL){
 		if(!$this->needs(self::ARR)) return false;
+
+		$fargs = array($this->_data, $callback);
+		if(!is_null($initial)){
+			array_push($fargs, $initial);
+		}
 		
-		return new self(array_reduce($this->_data, $callback, $initial));
+		return new self(call_user_func_array('array_reduce', $fargs));
 	}
 	
 	public function replace_recursive(){
@@ -599,14 +624,34 @@ class variable implements \ArrayAccess{
 	
 	public function slice($offset, $length = NULL, $preserve_keys = false){
 		if(!$this->needs(self::ARR)) return false;
+
+		$fargs = array($this->_data);
+		$values = array(
+			array($length, NULL),
+			array($preserve_keys, false)
+		);
 		
-		return new self(array_slice($this->_data, $offset, $length, $preserve_keys));
+		foreach($values as $val){
+			if($val[1] !== $val[2]){
+				$fargs[] = $val[1];
+			}else{
+				break;
+			}
+		}
+		
+		return new self(call_user_func_array('array_slice', $fargs));
 	}
 	
 	public function splice($offset, $length = 0, $replacement = NULL){
 		if(!$this->needs(self::ARR)) return false;
+
+		$fargs = array($this->_data, $offset, $length);
+
+		if($replacement !== NULL){
+			$fargs[] = $replacement;
+		}
 		
-		return new self(array_splice($this->_data, $offset, $length, $replacement));
+		return new self(call_user_func_array('array_splice', $fargs));
 	}
 	
 	public function sum(){
@@ -671,14 +716,26 @@ class variable implements \ArrayAccess{
 	
 	public function walk_recursive($funcname, $userdata = NULL){
 		if(!$this->needs(self::ARR)) return false;
+
+		$fargs = array($this->_data, $funcname);
+
+		if($userdata !== NULL){
+			$fargs[] = $userdata;
+		}
 		
-		return new self(array_walk_recursive($this->_data, $funcname, $userdata));
+		return new self(call_user_func_array('array_walk_recursive', $fargs));
 	}
 	
 	public function walk($funcname, $userdata = NULL){
 		if(!$this->needs(self::ARR)) return false;
+
+		$fargs = array($this->_data, $funcname);
 		
-		return new self(array_walk($this->_data, $funcname, $userdata));
+		if($userdata !== NULL){
+			$fargs[] = $userdata;
+		}
+		
+		return new self(call_user_func_array('array_walk', $fargs));
 	}
 	
 	public function arsort($sort_flags = SORT_REGULAR){
@@ -714,11 +771,18 @@ class variable implements \ArrayAccess{
 	public function extract($x_975fb664ba3a8450968b9daf0e6f8ec9 = EXTR_OVERWRITE, $x_851f5ac9941d720844d143ed9cfcf60a = NULL){  //XXX This method probably takes a damn long time to process, but it's the only way that I could think of doing it, and honestly, I though it was pretty clever myself =P
 		if(!$this->needs(self::ARR)) return false;
 		
-		extract($GLOBALS);
-		$x_e70c4df10ef0983b9c8c31bd06b2a2c3 = extract($this->_data);
-		$x_787ef08a9498c6398a41148ca8c276fe = get_defined_vars();
+		extract($GLOBALS);  //Extract the global symbol table into this scope
+
+		$x_13bbacf888ef2758e2a4d2fec38d475f = array($this->_data, $x_975fb664ba3a8450968b9daf0e6f8ec9);
+
+		if($x_851f5ac9941d720844d143ed9cfcf60a !== NULL){
+			$x_13bbacf888ef2758e2a4d2fec38d475f[] = $x_851f5ac9941d720844d143ed9cfcf60a;
+		}
+
+		$x_e70c4df10ef0983b9c8c31bd06b2a2c3 = call_user_func_array('extract', $x_13bbacf888ef2758e2a4d2fec38d475f);  //Extract variables from $this->_data into the current scope
+		$x_787ef08a9498c6398a41148ca8c276fe = get_defined_vars();  //Get all the defined vars in this scope (to include extracted globals)
 		
-		$GLOBALS = array_diff_key($x_787ef08a9498c6398a41148ca8c276fe, array('x_975fb664ba3a8450968b9daf0e6f8ec9' => '', 'x_851f5ac9941d720844d143ed9cfcf60a' => '', 'x_787ef08a9498c6398a41148ca8c276fe' => '', 'x_e70c4df10ef0983b9c8c31bd06b2a2c3' => ''));
+		$GLOBALS = array_diff_key($x_787ef08a9498c6398a41148ca8c276fe, array('x_975fb664ba3a8450968b9daf0e6f8ec9' => '', 'x_851f5ac9941d720844d143ed9cfcf60a' => '', 'x_787ef08a9498c6398a41148ca8c276fe' => '', 'x_e70c4df10ef0983b9c8c31bd06b2a2c3' => '', 'x_13bbacf888ef2758e2a4d2fec38d475f' => ''));  //Remove variables set in this scope
 		
 		return new self($x_e70c4df10ef0983b9c8c31bd06b2a2c3);
 	}
@@ -736,7 +800,7 @@ class variable implements \ArrayAccess{
 	}
 	
 	public function implode($glue = ''){
-		if(!$this->needs(self::SCALAR)) return false;
+		if(!$this->needs(self::ARR)) return false;
 		
 		return new self(implode($glue, $this->_data));
 	}
@@ -748,7 +812,7 @@ class variable implements \ArrayAccess{
 	}
 	
 	public function join($glue = ''){
-		if(!$this->needs(self::SCALAR)) return false;
+		if(!$this->needs(self::ARR)) return false;
 		
 		return new self(join($glue, $this->_data));
 	}
@@ -867,7 +931,13 @@ class variable implements \ArrayAccess{
 	public function chop($charlist = NULL){
 		if(!$this->needs(self::SCALAR)) return false;
 		
-		return new self(chop($this->_data));
+		$fargs = array($this->_data);
+
+		if($charlist !== NULL){
+			$fargs[] = $charlist;
+		}
+
+		return new self(call_user_func_array('chop', $fargs));
 	}
 	
 	public function chunk_split($chunklen = 76, $end = "\r\n"){
@@ -921,7 +991,13 @@ class variable implements \ArrayAccess{
 	public function crypt($salt = NULL){
 		if(!$this->needs(self::SCALAR)) return false;
 		
-		return new self(crypt($this->_data, $salt));
+		$fargs = array($this->_data);
+
+		if($salt !== NULL){
+			$fargsp[] = $salt;
+		}
+
+		return new self(call_user_func_array('crypt', $fargs));
 	}
 	
 	public function explode($delimiter = 1, $limit = NULL, $flags = 0){
@@ -929,7 +1005,7 @@ class variable implements \ArrayAccess{
 		
 		if(is_integer($delimiter)){ //str_split
 			return new self(str_split($this->_data, $delimiter));
-		}elseif($delimiter instanceof Phury\regex){  //preg_split
+		}elseif($delimiter instanceof Phyre\regex){  //preg_split
 			if($limit === NULL){
 				$limit = -1;
 			}
@@ -937,7 +1013,13 @@ class variable implements \ArrayAccess{
 			return new self(preg_split($delimiter->_(), $this->_data, $limit, $flags));
 		}
 		
-		return new self(explode($delimiter, $this->_data, $limit));  //explode
+		$fargs = array($delimiter, $this->_data);
+
+		if($limit !== NULL){
+			$fargs[] = $limit;
+		}
+
+		return new self(call_user_func_array('explode', $fargs));  //explode
 	}
 	
 	public function fprintf(){
@@ -982,7 +1064,21 @@ class variable implements \ArrayAccess{
 	public function htmlentities($flags = ENT_COMPAT, $charset = NULL, $double_encode = true){
 		if(!$this->needs(self::SCALAR)) return false;
 		
-		return new self(htmlentities($this->_data, $flags, $charset, $double_encode));
+		$fargs = array($this->_data, $flags);
+		$values = array(
+			array($charset, NULL),
+			array($double_encode, true)
+		);
+
+		foreach($values as $val){
+			if($val[1] !== $val[2]){
+				$fargs[] = $val[1];
+			}else{
+				break;
+			}
+		}
+
+		return new self(call_user_func_array('htmlentities', $fargs));
 	}
 	
 	public function htmlspecialchars_decode($quote_style = ENT_COMPAT){
@@ -993,8 +1089,22 @@ class variable implements \ArrayAccess{
 	
 	public function htmlspecialchars($flags = ENT_COMPAT, $charset = NULL, $double_encode = true){
 		if(!$this->needs(self::SCALAR)) return false;
+
+		$fargs = array($this->_data, $flags);
+		$values = array(
+			array($charset, NULL),
+			array($double_encode, true)
+		);
+
+		foreach($values as $val){
+			if($val[1] !== $val[2]){
+				$fargs[] = $val[1];
+			}else{
+				break;
+			}
+		}
 		
-		return new self(htmlspecialchars($this->_data, $flags, $charset, $double_encode));
+		return new self(call_user_func_array('htmlspecialchars', $fargs));
 	}
 	
 	public function lcfirst(){
@@ -1003,16 +1113,37 @@ class variable implements \ArrayAccess{
 		return new self(lcfirst($this->_data));
 	}
 	
-	public function levenshtein($str1, $str2, $cost_ins = NULL, $cost_rep = NULL, $cost_del = NULL){
+	public function levenshtein($str2, $cost_ins = NULL, $cost_rep = NULL, $cost_del = NULL){
 		if(!$this->needs(self::SCALAR)) return false;
+
+		$fargs = array($this->_data, $str2);
+		$values = array(
+			array($cost_ins, NULL),
+			array($cost_rep, NULL),
+			array($cost_del, NULL)
+		);
+
+		foreach($values as $val){
+			if($val[1] !== $val[2]){
+				$fargs[] = $val[1];
+			}else{
+				break;
+			}
+		}
 		
-		return new self(levenshtein($str1, $str2, $cost_ins, $cost_rep, $cost_del));
+		return new self(call_user_func_array('levenshtein', $fargs));
 	}
 	
 	public function ltrim($charlist = NULL){
 		if(!$this->needs(self::SCALAR)) return false;
 		
-		return new self(ltrim($this->_data, $charlist));
+		$fargs = array($this->_data);
+
+		if($charlist !== NULL){
+			$fargs[] = $charlist;
+		}
+
+		return new self(call_user_func_array('ltrim', $fargs));
 	}
 	
 	public function md5($raw_output = false){
@@ -1057,7 +1188,7 @@ class variable implements \ArrayAccess{
 		return new self(ord($this->_data));
 	}
 	
-	public function parse_str(&$arr = NULL){
+	public function parse_str(&$arr = NULL){  //TODO check this
 		if(!$this->needs(self::SCALAR)) return false;
 		
 		parse_str($this->_data, $arr);
@@ -1103,8 +1234,14 @@ class variable implements \ArrayAccess{
 	
 	public function rtrim($charlist = NULL){
 		if(!$this->needs(self::SCALAR)) return false;
+
+		$fargs = array($this->_data);
+
+		if($charlist !== NULL){
+			$fargs[] = $charlist;
+		}
 		
-		return new self(rtrim($this->_data, $charlist));
+		return new self(call_user_func_array('rtrim', $fargs));
 	}
 	
 	public function sha1($raw_output = false){
@@ -1113,7 +1250,7 @@ class variable implements \ArrayAccess{
 		return new self(sha1($this->_data, $raw_output));
 	}
 	
-	public function similar_text($second, &$percent = NULL){
+	public function similar_text($second, &$percent = NULL){  //TODO test this
 		if(!$this->needs(self::SCALAR)) return false;
 		
 		return new self(similar_text($this->_data, $second, $percent));
@@ -1157,8 +1294,14 @@ class variable implements \ArrayAccess{
 	
 	public function word_count($format = 0, $charlist = NULL){
 		if(!$this->needs(self::SCALAR)) return false;
+
+		$fargs = array($this->_data, $format);
+
+		if($charlist !== NULL){
+			$fargs[] = $charlist;
+		}
 		
-		return new self(str_word_count($this->_data, $format, $charlist));
+		return new self(call_user_func_array('str_word_count', $fargs));
 	}
 	
 	public function casecmp($str2){
@@ -1187,14 +1330,34 @@ class variable implements \ArrayAccess{
 	
 	public function cspn($str2, $start = NULL, $length = NULL){
 		if(!$this->needs(self::SCALAR)) return false;
+
+		$fargs = array($this->_data, $str2);
+		$values = array(
+			array($start, NULL),
+			array($length, NULL)
+		);
+
+		foreach($values as $val){
+			if($val[1] !== $val[2]){
+				$fargs[] = $val[1];
+			}else{
+				break;
+			}
+		}
 		
-		return new self(strcpsn($this->_data, $str2, $start, $length));
+		return new self(call_user_func_array('strcpsn', $fargs));
 	}
 	
 	public function strip_tags($allowable_tags = NULL){
 		if(!$this->needs(self::SCALAR)) return false;
 		
-		return new self(strip_tags($this->_data, $allowable_tags));
+		$fargs = array($this->_data);
+
+		if($allowable_tags !== NULL){
+			$fargs[] = $allowable_tags;
+		}
+
+		return new self(call_user_func_array('strip_tags', $fargs));
 	}
 	
 	public function stripcslashes(){
@@ -1280,7 +1443,7 @@ class variable implements \ArrayAccess{
 		
 		if(is_integer($delimiter)){ //str_split
 			return new self(str_split($this->_data, $delimiter));
-		}elseif($delimiter instanceof Phury\regex){  //preg_split
+		}elseif($delimiter instanceof Phyre\regex){  //preg_split
 			if($limit === NULL){
 				$limit = -1;
 			}
@@ -1288,13 +1451,25 @@ class variable implements \ArrayAccess{
 			return new self(preg_split($delimiter->_(), $this->_data, $limit, $flags));
 		}
 		
-		return new self(explode($delimiter, $this->_data, $limit));  //explode
+		$fargs = array($delimiter, $this->_data);
+
+		if($limit !== NULL){
+			$fargs[] = $limit;
+		}
+
+		return new self(call_user_func_array('explode', $fargs));  //explode
 	}
 	
 	public function spn($mask, $start = NULL, $length = NULL){
 		if(!$this->needs(self::SCALAR)) return false;
+
+		$fargs = array($this->_data, $mask);
+		$values = array(
+			array($start, NULL),
+			array($length, NULL)
+		);
 		
-		return new self(strspn($this->_data, $mask, $start, $length));
+		return new self(call_user_func_array('strspn', $fargs));
 	}
 	
 	public function str(){
@@ -1329,32 +1504,70 @@ class variable implements \ArrayAccess{
 	
 	public function substr_compare($str, $offset, $length = NULL, $case_insensitivity = false){
 		if(!$this->needs(self::SCALAR)) return false;
+
+		$fargs = array($this->_data, $str, $offset);
+		$values = array(
+			array($length, NULL),
+			array($case_insensitivity, false)
+		);
+
+		foreach($values as $val){
+			if($val[1] !== $val[2]){
+				$fargs[] = $val[1];
+			}else{
+				break;
+			}
+		}
 		
-		return new self(substr_compare($this->_data, $str, $offset, $length, $case_insensitivity));
+		return new self(call_user_func_array('substr_compare', $fargs));
 	}
 	
 	public function substr_count($needle, $offset = 0, $length = NULL){
 		if(!$this->needs(self::SCALAR)) return false;
+
+		$fargs = array($this->_data, $needle, $offset);
+
+		if($length !== NULL){
+			$fargs[] = NULL;
+		}
 		
-		return new self(substr_count($this->_data, $needle, $offset, $length));
+		return new self(call_user_func_array('substr_count', $fargs));
 	}
 	
 	public function substr_replace($replacement, $start, $length = NULL){
 		if(!$this->needs(self::SCALAR)) return false;
+
+		$fargs = array($this->_data, $replacement, $start);
+
+		if($length !== NULL){
+			$fargs[] = $length;
+		}
 		
-		return new self(substr_replace($this->_data, $replacement, $start, $length));
+		return new self(call_user_func_array('substr_replace', $fargs));
 	}
 	
 	public function substr($start, $length = NULL){
 		if(!$this->needs(self::SCALAR)) return false;
 		
-		return new self(substr($this->_data, $start, $length));
+		$fargs = array($this->_data, $start);
+		
+		if($length !== NULL){
+			$fargs[] = $length;
+		}
+		
+		return new self(call_user_func_array('substr', $fargs));
 	}
 	
 	public function trim($charlist = NULL){
 		if(!$this->needs(self::SCALAR)) return false;
+
+		$fargs = array($this->_data);
+
+		if($charlist !== NULL){
+			$fargs[] = $charlist;
+		}
 		
-		return new self(trim($this->_data, $charlist));
+		return new self(call_user_func_array('trim', $fargs));
 	}
 	
 	public function ucfirst(){
@@ -1765,18 +1978,18 @@ class variable implements \ArrayAccess{
 		return new self(tanh($this->_data));
 	}
 	
-	public function up(){
+	public function up($amount = 1){
 		if(!$this->needs(self::ALL)) return false;
 		
-		$this->_data++;
+		$this->_data += $amount;
 		
 		return $this;
 	}
 	
-	public function dn(){
+	public function dn($amount = 1){
 		if(!$this->needs(self::ALL)) return false;
 		
-		$this->_data--;
+		$this->_data -= $amount;
 		
 		return $this;
 	}
@@ -1842,7 +2055,7 @@ class variable implements \ArrayAccess{
 	}
 	
 	protected function get_raw_data($thingy){
-		if($thingy instanceof Phury){
+		if($thingy instanceof Phyre){
 			return $thingy->_data;
 		}
 		
