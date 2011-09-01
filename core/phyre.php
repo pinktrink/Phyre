@@ -37,8 +37,10 @@ function r(){
 	return call_user_func_array('Phyre\regex', func_get_args());
 }
 
-$x = p(array(1, 2, 3, 4, 5))->flip->flip->flip->i(2)->up->cast(variable::STRING)->cat('foo')->append('12345')->prepend('hi')->substr(3, 3)->cast(variable::ARR)->shift->substr(1)->split->pop->bin2hex->split->join(' ')->cat('ine folks');
+$time = microtime(true);
+$x = p(array(1, 2, 3, 4, 5))->flip()->flip()->flip()->i(2)->up()->cast(variable::STRING)->cat('foo')->append('12345')->prepend('hi')->substr(3, 3)->cast(variable::ARR)->shift()->substr(1)->split()->pop()->bin2hex()->split()->join(' ')->cat('ine folks');
 $x[12] = ' eat bread';
+var_dump(microtime(true) - $time);
 
 var_dump($x);
 ?>

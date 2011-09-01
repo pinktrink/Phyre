@@ -135,7 +135,7 @@ $foo->match('ABeFg');  //returns true
 ```php
 $foo = r('/!!|%/');
 
-echo p('hello!!world%hello%universe')->split($foo)->join(' ');
+echo p('hello!!world%hello%universe')->split($foo)->join(' ')->_;
 //echoes 'hello world hello universe'
 ```
 
@@ -146,6 +146,14 @@ in:
 * split
 * more to come, I'm just lazy at the moment.
 
+Be careful though. You have to drop a regex object into those functions. You
+can't simply use:
+
+```php
+echo p('hello!!world%hello%universe')->split('/!!|%/')->_;
+//echoes array('hello!!world%hello%universe');
+```
+
 **This is all nice, but what about processing time?**
 
 Worry not, my friend. This bit:
@@ -153,9 +161,18 @@ Worry not, my friend. This bit:
 ```php
 $x = p(array(1, 2, 3, 4, 5))->flip->flip->flip->i(2)->up->cast(variable::STRING)->cat('foo')->append('12345')->prepend('hi')->substr(3, 3)->cast(variable::ARR)->shift->substr(1)->split->pop->bin2hex->split->join(' ')->cat('ine folks');
 $x[12] = ' eat bread';
+//In case you're wondering: $x->_; returns '6 fine folks eat bread'
 ```
 
-Took an average of about 0.00047 seconds on my MacBook Air with a 2.13 GHz Intel Core 2 Duo.
+Took an average of about 0.00044 seconds on my MacBook Air with a 2.13 GHz Intel
+Core 2 Duo, and
+
+```php
+$x = p(array(1, 2, 3, 4, 5))->flip()->flip()->flip()->i(2)->up()->cast(variable::STRING)->cat('foo')->append('12345')->prepend('hi')->substr(3, 3)->cast(variable::ARR)->shift()->substr(1)->split()->pop()->bin2hex()->split()->join(' ')->cat('ine folks');
+$x[12] = ' eat bread';
+```
+
+Takes an average of about 0.00037 seconds.
 
 ### Other fancy things
 

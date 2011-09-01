@@ -150,7 +150,7 @@ class variable implements \ArrayAccess{
 		'sqrt',
 		'up', 'dn',
 		
-		'length', 'count',
+		'length', 'len', 'count', 'sizeof', 'size',
 		'shuffle'
 	);
 	
@@ -1611,71 +1611,83 @@ class variable implements \ArrayAccess{
 	
 	
 	//String and array functions
-	public function pad(){
-		if(!$this->needs(self::STRING, self::ARR)) return false;
+	public function pad($pad_length, $pad_string = ' ', $pad_type = STR_PAD_RIGHT){
+		if(!$this->needs(self::SCALAR | self::ARR)) return false;
 		
 		switch($this->type()){
-			case self::STRING:
-				break;
+			case self::SCALAR:
+				return new self(str_pad($this->_data, $pad_length, $pad_string, $pad_type));
 			
 			case self::ARR:
-				break;
+				return new self(array_pad($this->_data, $pad_length, $pad_string));
 		}
 	}
 	
 	public function length(){
-		if(!$this->needs(self::STRING, self::ARR)) return false;
+		if(!$this->needs(self::SCALAR | self::ARR)) return false;
 		
 		switch($this->type()){
-			case self::STRING:
-				break;
+			case self::SCALAR:
+				return new self(strlen($this->_data));
 			
 			case self::ARR:
-				break;
+				return new self(count($this->_data));
 		}
 	}
 	
 	public function len(){
-		if(!$this->needs(self::STRING, self::ARR)) return false;
+		if(!$this->needs(self::SCALAR | self::ARR)) return false;
 		
 		switch($this->type()){
-			case self::STRING:
-				break;
+			case self::SCALAR:
+				return new self(strlen($this->_data));
 			
 			case self::ARR:
-				break;
+				return new self(count($this->_data));
 		}
 	}
 	
 	public function count(){
-		if(!$this->needs(self::STRING, self::ARR)) return false;
+		if(!$this->needs(self::SCALAR | self::ARR)) return false;
 		
 		switch($this->type()){
-			case self::STRING:
-				break;
+			case self::SCALAR:
+				return new self(strlen($this->_data));
 			
 			case self::ARR:
-				break;
+				return new self(count($this->_data));
 		}
 	}
 	
 	public function sizeof(){
-		if(!$this->needs(self::STRING, self::ARR)) return false;
+		if(!$this->needs(self::SCALAR | self::ARR)) return false;
 		
 		switch($this->type()){
-			case self::STRING:
-				break;
+			case self::SCALAR:
+				return new self(strlen($this->_data));
 			
 			case self::ARR:
-				break;
+				return new self(count($this->_data));
+		}
+	}
+	
+	public function size(){
+		if(!$this->needs(self::SCALAR | self::ARR)) return false;
+		
+		switch($this->type()){
+			case self::SCALAR:
+				return new self(strlen($this->_data));
+			
+			case self::ARR:
+				return new self(count($this->_data));
 		}
 	}
 	
 	public function replace(){
-		if(!$this->needs(self::STRING, self::ARR)) return false;
+		if(!$this->needs(self::SCALAR | self::ARR)) return false;
 		
 		switch($this->type()){
-			case self::STRING:
+			case self::SCALAR:
 				break;
 			
 			case self::ARR:
@@ -1684,10 +1696,10 @@ class variable implements \ArrayAccess{
 	}
 	
 	public function shuffle(){
-		if(!$this->needs(self::STRING, self::ARR)) return false;
+		if(!$this->needs(self::SCALAR | self::ARR)) return false;
 		
 		switch($this->type()){
-			case self::STRING:
+			case self::SCALAR:
 				break;
 			
 			case self::ARR:
@@ -1696,10 +1708,10 @@ class variable implements \ArrayAccess{
 	}
 	
 	public function pos(){
-		if(!$this->needs(self::STRING, self::ARR)) return false;
+		if(!$this->needs(self::SCALAR | self::ARR)) return false;
 		
 		switch($this->type()){
-			case self::STRING:
+			case self::SCALAR:
 				break;
 			
 			case self::ARR:
