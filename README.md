@@ -74,7 +74,8 @@ on any variable or the likes, it will return a Phyre object. If you want to get
 the raw data back out of that, simply use the `_()` method.
 
 **Wait, did you say method? Then how did you use `_`?**
-Oh, that's easy. Any method that only requires one argument can be accessed as a
+
+Oh, that's easy. Any method that only *requires* one argument can be accessed as a
 property can be. Like this:
 
 ```php
