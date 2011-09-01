@@ -2123,7 +2123,7 @@ class variable implements \ArrayAccess{
 			$len = strlen($this->_data);
 			
 			if($offset <= $len){
-				return $this->_data = substr_replace($this->_data, $value, $offset, $offset === $len ? 0 : strlen($value));
+				return $this->_data = substr_replace($this->_data, $value, $offset, 1);
 			}
 		}
 		
