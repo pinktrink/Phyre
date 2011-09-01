@@ -1,4 +1,6 @@
-## Phyre for PHP
+## Phyre for PHP 5.3+
+
+> Please note that I have no plans to support any version of PHP less than 5.3
 
 I've used PHP for a damn long time, and I've loved it. I recently moved over to
 JavaScript and started having fun with it. Over the time that I was messing with
