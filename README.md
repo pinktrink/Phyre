@@ -50,6 +50,13 @@ $foo = p('foo bar baz')->split(' ')->i(1)->replace('b', 'f')->cat(' better')->_;
 //$foo = 'far better'
 ```
 
+Or, if you prefer, you can use `->i` as an array:
+
+```PHP
+$for = p('foo bar baz')->split(' ')->i[1]->replace('b', 'f')->cat(' better')->_;
+//$foo = 'far better'
+```
+
 If you use PHP >= 5.4 you can take advantage of array dereferencing.
 
 ```PHP

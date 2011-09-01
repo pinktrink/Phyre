@@ -80,7 +80,9 @@ class variable implements \ArrayAccess{
 		'is_iterable', 'not_iterable',
 		'is_traversable', 'not_traversable',
 		'type',
+		
 		'_',
+		'i',
 		
 		'change_key_case',
 		'count_values',
@@ -1997,12 +1999,16 @@ class variable implements \ArrayAccess{
 	
 	
 	//Custom
-	public function i($index){
-		if(isset($this->_data[$index])){
-			return new self($this->_data[$index]);
+	public function i($index = NULL){
+		if($index !== NULL){
+			if(isset($this->_data[$index])){
+				return new self($this->_data[$index]);
+			}
+			
+			return NULL;
 		}
 		
-		return NULL;
+		return $this;
 	}
 	
 	public function cat($data){
