@@ -155,7 +155,7 @@ $x = p(array(1, 2, 3, 4, 5))->flip->flip->flip->i(2)->up->cast(variable::STRING)
 $x[12] = ' eat bread';
 ```
 
-Took an average of about 0.00047 seconds on my MacBook Air.
+Took an average of about 0.00047 seconds on my MacBook Air with a 2.13 GHz Intel Core 2 Duo.
 
 ### Other fancy things
 
