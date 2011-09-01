@@ -180,11 +180,61 @@ p(function(){
 //echoes 'hello world'
 ```
 
+If you store it into a variable, you can call it as you normally would:
+
+```php
+$foo = p(function()){
+	echo 'hello world';
+});
+$foo();
+//echoes 'hello world'
+```
+
 You can still access your array normally.
 
 ```php
 $foo = p(array(1, 2, 3, 4, 5));
 $foo[2]->_;  //returns 3
+```
+
+You can still set indices of your array easily:
+
+```php
+$foo = p(array(1, 2, 3, 4, 5));
+$foo[2] = 9;
+unset($foo[3]);
+$foo->_;  //returns array(1, 2, 9, 5)
+```
+
+You can also replace portions of a string:
+
+```php
+$foo = p('abcde');
+$foo[2] = 'x';
+$foo->_;  //returns 'abxde'
+```
+
+That makes injecting data into strings exremely easy:
+
+```php
+$foo = p('he wold')->i[1] = 'ello';
+$foo[7] = 'or';
+$foo->_;  //returns 'hello world'
+```
+
+You can also append strings this way:
+
+```php
+$foo = p('hello worl')->i[10] = 'd';
+$foo->_;  //returns 'hello world'
+```
+
+You can also remove a character from a string like this:
+
+```php
+$foo = p('heello world');
+unset($foo[2]);
+$foo->_;  //returns 'hello world'
 ```
 
 #### Care enough to donate?

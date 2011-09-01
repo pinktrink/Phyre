@@ -1752,12 +1752,6 @@ class variable implements \ArrayAccess{
 		return $this->apply(func_get_args());
 	}
 	
-	public function __invoke(){
-		if(!$this->needs(self::CLOSURE)) return false;
-		
-		return $this->apply(func_get_args());
-	}
-	
 	
 	
 	//Object functions
@@ -2080,6 +2074,22 @@ class variable implements \ArrayAccess{
 		return NULL;
 	}
 	
+	public function __invoke(){
+		if(!$this->needs(self::CLOSURE)) return false;
+		
+		return $this->apply(func_get_args());
+	}
+	
+	public function __toString(){
+		if(!$this->needs(self::ALL ^ self::OBJECT ^ self::CLOSURE)) return false;
+		
+		if($this->is_array()){
+			return implode(',', $this->_data);
+		}else{
+			return $this->_data;
+		}
+	}
+	
 	
 	
 	public function offsetExists($offset){
@@ -2089,17 +2099,53 @@ class variable implements \ArrayAccess{
 	public function offsetGet($offset){
 		if(isset($this->_data[$offset])){
 			return $this->_data[$offset];
+		}else{
+			if(!($this->type() & (self::OBJECT | self::CLOSURE))){
+				return false;
+			}
+			
+			if(property_exists($this->_data, $offset)){
+				return $this->_data->$offset;
+			}
 		}
 		
 		return NULL;
 	}
 	
 	public function offsetSet($offset, $value){
-		return $this->_data[$offset] = $value;
+		if(!$this->is_scalar()){
+			return $this->_data[$offset] = $value;
+		}else{
+			if(!is_int($offset)){
+				return false;
+			}
+			
+			$len = strlen($this->_data);
+			
+			if($offset <= $len){
+				return $this->_data = substr_replace($this->_data, $value, $offset, $offset === $len ? 0 : strlen($value));
+			}
+		}
+		
+		return NULL;
 	}
 	
 	public function offsetUnset($offset){
-		unset($this->_data[$offset]);
+		if(!$this->is_scalar()){
+			unset($this->_data[$offset]);
+		}else{
+			if(!is_int($offset)){
+				return false;
+			}
+			
+			$len = strlen($this->_data);
+			
+			if($offset < $len){
+				$this->_data = substr_replace($this->_data, $offset);
+			}else{
+				return false;
+			}
+		}
 		
 		return true;
 	}
