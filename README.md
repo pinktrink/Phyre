@@ -104,3 +104,43 @@ echo p(['a', 'b', 'c', 'd', 5]);
 ```
 
 Seems pretty easy, yes?
+
+**Can I use this in a framework such as CodeIgniter or FuelPHP?**
+
+Definitely! I made this framework to be droppable into anything. The only thing
+it will affect is if there is a function somewhere named `p()` that is going to
+be declared. At that point you may want to drop the `p()` function in phyre.php.
+`p()` is simply an alias of the function `phyre()`, meaining that any instance
+of `p( ... )` can be replaced with `phyre( ... )`.
+
+You also may want to watch out for the `r()` function which is an alias for the
+`regex()` function.
+
+**Did you say regex?**
+
+Oh yeah, forgot to mention. Phyre also has a `regex` class in it. Instead of
+trying to explain it, I'll just jump straight into it:
+
+```php
+include 'phyre/phyre.php';
+use Phyre/variable;
+use Phyre/regex;
+
+$foo = r('/abc?d*e+fg/i');
+$foo->match('ABeFg');  //returns true
+```
+
+*But wait, there's more!*
+
+```php
+$foo = r('/!!|%/');
+
+echo p('hello!!world%hello%universe')->split($foo)->join(' ');
+//echoes 'hello world hello universe'
+```
+
+Yes. There are a few methods that allow for a regex object to be dropped right
+in:
+
+* explode
+* split
