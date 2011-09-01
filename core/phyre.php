@@ -1,8 +1,8 @@
 <?php
 namespace Phyre;
 
-include 'phury_variable.php';
-include 'phury_regex.php';
+include 'phyre_variable.php';
+include 'phyre_regex.php';
 
 function Phyre(){
 	$ret = array();
@@ -38,5 +38,7 @@ function r(){
 }
 
 $x = p(array(1, 2, 3, 4, 5))->flip->flip->flip->i(2)->up->cast(variable::STRING)->cat('foo')->append('12345')->prepend('hi')->substr(3, 3)->cast(variable::ARR)->shift->substr(1)->split->pop->bin2hex->split->join(' ')->cat('ine folks');
+$x[12] = ' eat bread';
+
 var_dump($x);
 ?>

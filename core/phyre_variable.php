@@ -2098,14 +2098,14 @@ class variable implements \ArrayAccess{
 	
 	public function offsetGet($offset){
 		if(isset($this->_data[$offset])){
-			return $this->_data[$offset];
+			return new self($this->_data[$offset]);
 		}else{
 			if(!($this->type() & (self::OBJECT | self::CLOSURE))){
-				return false;
+				return NULL;
 			}
 			
 			if(property_exists($this->_data, $offset)){
-				return $this->_data->$offset;
+				return new self($this->_data->$offset);
 			}
 		}
 		

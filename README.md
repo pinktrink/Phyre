@@ -145,6 +145,17 @@ in:
 * explode
 * split
 
+**This is all nice, but what about processing time?**
+
+Worry not, my friend. This bit:
+
+```php
+$x = p(array(1, 2, 3, 4, 5))->flip->flip->flip->i(2)->up->cast(variable::STRING)->cat('foo')->append('12345')->prepend('hi')->substr(3, 3)->cast(variable::ARR)->shift->substr(1)->split->pop->bin2hex->split->join(' ')->cat('ine folks');
+$x[12] = ' eat bread';
+```
+
+Took an average of about 0.00047 seconds on my MacBook Air.
+
 #### Other fancy things
 
 Strings can still be accessed as arrays, as such:
