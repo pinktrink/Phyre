@@ -27,7 +27,7 @@ it's replacing.
 In JS you can simply do this:
 
 ```JS
-var foo = 'foo bar baz'.split(' ').replace('b', 'f') + ' from hard';
+var foo = 'foo bar baz'.split(' ')[1].replace('b', 'f') + ' from hard';
 //foo = 'far from hard'
 ```
 
@@ -39,24 +39,28 @@ code. So I made PHP Phyre. Here's that same bit from above, using PHP Phyre:
 include 'phyre/phyre.php'
 use Phyre\variable;
 
-$foo = p('foo bar baz')->split(' ')->replace('b', 'f')->_ . ' better';
+$foo = p('foo bar baz')->split(' ')->i(1)->replace('b', 'f')->_ . ' better';
 //$foo = 'far better'
 ```
 
 You can also use:
 
 ```PHP
-include 'phyre/phyre.php'
-use Phyre\variable;
+$foo = p('foo bar baz')->split(' ')->i(1)->replace('b', 'f')->cat(' better')->_;
+//$foo = 'far better'
+```
 
-$foo = p('foo bar baz')->split(' ')->replace('b', 'f')->cat(' better')->_;
+If you use PHP >= 5.4 you can take advantage of array dereferencing.
+
+```PHP
+$foo = p('foo bar baz')->split(' ')[1]->replace('b', 'f')->cat(' better')->_;
 //$foo = 'far better'
 ```
 
 It seems much more readable, doesn't it?
-It's easy to tell that the string `'foo bar baz'` is being `split`, then having
-any instance of `b` replaced with `f`, then having `' better'` tacked onto the
-end of it.
+It's easy to tell that the string `'foo bar baz'` is being `split`, grabbing
+index `1` of the resulting array, then having any instance of `b` replaced with
+`f`, then having `' better'` tacked onto the end of it.
 
 You might be wondering what the `->_` is for. That's simple. When you use `p()`
 on any variable or the likes, it will return a Phyre object. If you want to get
@@ -78,7 +82,13 @@ a string as well, like this:
 
 ```PHP
 echo p(array('a', 'b', 'c', 'd', 5));
-//echoes 'abcd5';
+//echoes 'abcd5'
 ```
+
+Or, in PHP 5.4, with short array syntax:
+
+```PHP
+echo p(['a', 'b', 'c', 'd', 5]);
+//echoes 'abcd5'
 
 Seems pretty easy, yes?
