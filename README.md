@@ -144,3 +144,50 @@ in:
 
 * explode
 * split
+
+#### Other fancy things
+
+Strings can still be accessed as arrays, as such:
+
+```php
+p('abcdefg')->i[3];  //returns 'd'
+```
+
+Closures can be called with ease.
+
+```php
+p(function($a){
+	echo "hello $a";
+})->call('world');
+//echoes 'hello world'
+```
+
+If you have a list of arguments as an array:
+
+```php
+p(function($a, $b)){
+	echo "$a $b";
+})->apply(array('hello', 'world'));
+//echoes 'hello world'
+```
+
+Or you can simply call it without arguments:
+
+```php
+p(function(){
+	echo "hello world";
+})->call;
+//echoes 'hello world'
+```
+
+You can still access your array normally.
+
+```php
+$foo = p(array(1, 2, 3, 4, 5));
+$foo[2]->_;  //returns 3
+```
+
+#### Care enough to donate?
+
+Too bad, I won't accept donations for this. Go buy yourself a good beer, sit
+down, enjoy it, and set your code on Phyre.
