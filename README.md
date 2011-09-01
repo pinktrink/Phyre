@@ -144,6 +144,7 @@ in:
 
 * explode
 * split
+* more to come, I'm just lazy at the moment.
 
 **This is all nice, but what about processing time?**
 
@@ -156,7 +157,7 @@ $x[12] = ' eat bread';
 
 Took an average of about 0.00047 seconds on my MacBook Air.
 
-#### Other fancy things
+### Other fancy things
 
 Strings can still be accessed as arrays, as such:
 
@@ -248,7 +249,16 @@ unset($foo[2]);
 $foo->_;  //returns 'hello world'
 ```
 
-#### Care enough to donate?
+You can also set multiple variables using a single function call.
+
+```php
+list($foo, $bar, $baz) = p('foo', array('b', 'a', 'r'), 3);
+$foo->_;  //returns 'foo'
+$bar->_;  //returns array('b', 'a', 'r')
+$baz->_;  //returns 3
+```
+
+### Care enough to donate?
 
 Too bad, I won't accept donations for this. Go buy yourself a good beer, sit
 down, enjoy it, and set your code on Phyre.
