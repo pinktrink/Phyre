@@ -6,7 +6,7 @@ JavaScript, I noticed that it seemed much easier to work with than PHP, and
 that's because it's object-oriented, whereas PHP is *mainly* procedural. Take a
 good look at this PHP excerpt (< 5.4):
 
-```PHP
+```php
 $foo = split(' ', 'foo bar baz');
 $foo = str_replace('b', 'f', $foo[1]);
 $foo .= ' from easy';
@@ -15,7 +15,7 @@ $foo .= ' from easy';
 
 or in PHP 5.4:
 
-```PHP
+```php
 $foo = str_replace('b', 'f', split(' ', 'foo bar baz')[1]) . ' from readable';
 //$foo = 'far from readable'
 ```
@@ -35,7 +35,7 @@ I decided to take PHP and try to make it that way. A little more readable. Maybe
 eliminate some of the tendencies that PHP has to quickly turn into spaghetti
 code. So I made PHP Phyre. Here's that same bit from above, using PHP Phyre:
 
-```PHP
+```php
 include 'phyre/phyre.php'
 use Phyre\variable;
 
@@ -52,14 +52,14 @@ $foo = p('foo bar baz')->split(' ')->i(1)->replace('b', 'f')->cat(' better')->_;
 
 Or, if you prefer, you can use `->i` as an array:
 
-```PHP
+```php
 $for = p('foo bar baz')->split(' ')->i[1]->replace('b', 'f')->cat(' better')->_;
 //$foo = 'far better'
 ```
 
 If you use PHP >= 5.4 you can take advantage of array dereferencing.
 
-```PHP
+```php
 $foo = p('foo bar baz')->split(' ')[1]->replace('b', 'f')->cat(' better')->_;
 //$foo = 'far better'
 ```
@@ -77,7 +77,7 @@ the raw data back out of that, simply use the `_()` method.
 Oh, that's easy. Any method that only requires one argument can be accessed as a
 property can be. Like this:
 
-```PHP
+```php
 echo p('tavegf')->rot13->rev;
 //echoes 'string'
 ```
@@ -87,14 +87,14 @@ string normally would, it will return the raw string data. If it is an integer
 or float, it will return that data as a string as well. An array will turn into
 a string as well, like this:
 
-```PHP
+```php
 echo p(array('a', 'b', 'c', 'd', 5));
 //echoes 'abcd5'
 ```
 
 Or, in PHP 5.4, with short array syntax:
 
-```PHP
+```php
 echo p(['a', 'b', 'c', 'd', 5]);
 //echoes 'abcd5'
 ```
