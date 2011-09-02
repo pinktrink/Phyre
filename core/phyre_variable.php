@@ -2160,6 +2160,22 @@ class variable implements \ArrayAccess{
 	}
 	
 	public function offsetGet($offset){
+		if($this->is_scalar()){
+			switch(substr($offset, 0, 1)){
+				case '@':
+					if(strlen($offset) === 1){
+						return NULL;
+					}
+					
+					$arr = array_map('trim', explode(',', substr($offset, 1)));
+					
+					if(isset($arr[1])){
+						return new self(substr($this->_data, (int)$arr[0], (int)$arr[1]));
+					}else{
+						return new self(substr($this->_data, (int)$arr[0]));
+					}
+			}
+		}
 		if(isset($this->_data[$offset])){
 			return new self($this->_data[$offset]);
 		}else{
@@ -2179,10 +2195,6 @@ class variable implements \ArrayAccess{
 		if(!$this->is_scalar()){
 			return $this->_data[$offset] = $value;
 		}else{
-			if(!is_int($offset)){
-				return false;
-			}
-			
 			$len = strlen($this->_data);
 			
 			if(in_array($offset, array('>', '.', '+', '>>'))){
@@ -2191,7 +2203,7 @@ class variable implements \ArrayAccess{
 			}elseif(in_array($offset, array('<', '<<'))){
 				$this->_data = $value . $this->_data;
 				return $this;
-			}elseif($offset <= $len || $append){
+			}elseif(is_int($offset) && $offset <= $len){
 				return $this->_data = substr_replace($this->_data, $value, $offset, 1);
 			}
 		}
@@ -2203,16 +2215,10 @@ class variable implements \ArrayAccess{
 		if(!$this->is_scalar()){
 			unset($this->_data[$offset]);
 		}else{
-			if(!is_int($offset)){
-				return false;
-			}
-			
-			$len = strlen($this->_data);
-			
-			if($offset < $len){
+			if(is_int($offset) && $offset < strlen($this->_data)){
 				$this->_data = substr_replace($this->_data, '', $offset, 1);
 			}else{
-				return false;
+				return NULL;
 			}
 		}
 		

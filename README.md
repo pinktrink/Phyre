@@ -292,6 +292,13 @@ unset($foo[2]);
 $foo->_;  //returns 'hello world'
 ```
 
+Do you just want a part of the string?
+
+```php
+$foo = p('abchello worlddef');
+$foo['@3,11']->_;  //Same as calling substr($foo->_, 3, 11), returns 'hello world'
+```
+
 You can also set multiple variables using a single function call.
 
 ```php
