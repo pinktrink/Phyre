@@ -2081,6 +2081,12 @@ class variable implements \ArrayAccess{
 		return $this->_data;
 	}
 	
+	public function assign(&$var){
+		$var = $this;
+		
+		return $this;
+	}
+	
 	public function __get($var){
 		if(in_array($var, self::$_prop_methods)){
 			return $this->$var();

@@ -329,6 +329,15 @@ foo('++');  //Same as calling $foo->up(1);
 foo('--');  //Same as calling $foo->dn(1);
 ```
 
+Don't want to lose the variable you currently have, but want to continue
+chaining? Easy:
+
+```php
+$foo = p('o')->prepend('hell')->assign($bar)->append(' world');
+$foo->_;  //returns 'hello world'
+$bar->_;  //returns 'hello'
+```
+
 ### Care enough to donate?
 
 Too bad, I won't accept donations for this. Go buy yourself a good beer, sit
