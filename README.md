@@ -321,7 +321,7 @@ $foo('<<');  //Same as calling $foo->reset;
 $foo('~');  //Same as calling $foo->each;
 ```
 
-You can also increment or derement in this way:
+You can also increment or decrement in this way:
 
 ```php
 $foo = p(1);
