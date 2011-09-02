@@ -69,6 +69,9 @@ $foo = p('foo bar baz')->split(' ')[1]->replace('b', 'f')->cat(' better')->_;
 //$foo = 'far better'
 ```
 
+> `->i` takes care of the lack of array dereferencing in 5.3, so that you can
+chain your code like crazy.
+
 It seems much more readable, doesn't it?
 It's easy to tell that the string `'foo bar baz'` is being `split`, grabbing
 index `1` of the resulting array, then having any instance of `b` replaced with
@@ -208,7 +211,7 @@ Or you can simply call it without arguments:
 ```php
 p(function(){
 	echo "hello world";
-})->call;
+})->apply;
 //echoes 'hello world'
 ```
 
@@ -261,7 +264,27 @@ $foo = p('hello worl')->i[10] = 'd';
 $foo->_;  //returns 'hello world'
 ```
 
-You can also remove a character from a string like this:
+Or append strings using any of these methods:
+
+```php
+$foo = p('');
+$foo['>'] = 'hel';
+$foo['.'] = 'lo ';
+$foo['+'] = 'wor';
+$foo['>>'] = 'ld';
+$foo->_;  //returns 'hello world'
+```
+
+You can prepend strings in this way:
+
+```php
+$foo = ('world');
+$foo['<'] = 'lo ';
+$foo['<<'] = 'hel';
+$foo->_;  //returns 'hello world'
+```
+
+You can remove a character from a string like this:
 
 ```php
 $foo = p('heello world');
@@ -276,6 +299,27 @@ list($foo, $bar, $baz) = p('foo', array('b', 'a', 'r'), 3);
 $foo->_;  //returns 'foo'
 $bar->_;  //returns array('b', 'a', 'r')
 $baz->_;  //returns 3
+```
+
+I also did a bit with array traversal:
+
+```php
+$foo = p(array(1, 2, 3, 4, 5));
+$foo('>');  //Same as calling $foo->next;
+$foo('>>');  //Same as calling $foo->end;
+$foo('.');  //Same as calling $foo->current;
+$foo('*');  //Same as calling $foo->key;
+$foo('<');  //Same as calling $foo->prev;
+$foo('<<');  //Same as calling $foo->reset;
+$foo('~');  //Same as calling $foo->each;
+```
+
+You can also increment or derement in this way:
+
+```php
+$foo = p(1);
+foo('++');  //Same as calling $foo->up(1);
+foo('--');  //Same as calling $foo->dn(1);
 ```
 
 ### Care enough to donate?

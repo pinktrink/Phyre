@@ -82,6 +82,7 @@ class variable implements \ArrayAccess{
 		'type',
 		
 		'_',
+		'__',
 		'i',
 		
 		'change_key_case',
@@ -2089,9 +2090,57 @@ class variable implements \ArrayAccess{
 	}
 	
 	public function __invoke(){
-		if(!$this->needs(self::CLOSURE)) return false;
+		if(!$this->needs(self::CLOSURE | self::ARR)) return false;
 		
-		return $this->apply(func_get_args());
+		$args = func_get_args();
+		
+		switch($this->type()){
+			case self::CLOSURE:
+				return new self($this->apply($args));
+			
+			case self::ARR:
+				$arg = array_shift($args);
+				switch($arg){
+					
+					case '<<':
+						return new self(reset($this->_data));
+					
+					case '<':
+						return new self(prev($this->_data));
+					
+					case '.':
+						return new self(current($this->_data));
+					
+					case '>':
+						return new self(next($this->_data));
+					
+					case '>>':
+						return new self(end($this->_data));
+					
+					case '~':
+						return new self(each($this->_data));
+					
+					case '*':
+						return new self(key($this->_data));
+				}
+				
+				return NULL;
+			
+			default:
+				$arg = array_shift($arg);
+				
+				switch($arg){
+					case '++':
+						$this->_data++;
+						return $this;
+					
+					case '--':
+						$this->_data--;
+						return $this;
+				}
+				
+				return NULL;
+		}
 	}
 	
 	public function __toString(){
@@ -2136,7 +2185,13 @@ class variable implements \ArrayAccess{
 			
 			$len = strlen($this->_data);
 			
-			if($offset <= $len){
+			if(in_array($offset, array('>', '.', '+', '>>'))){
+				$this->_data .= $value;
+				return $this;
+			}elseif(in_array($offset, array('<', '<<'))){
+				$this->_data = $value . $this->_data;
+				return $this;
+			}elseif($offset <= $len || $append){
 				return $this->_data = substr_replace($this->_data, $value, $offset, 1);
 			}
 		}
