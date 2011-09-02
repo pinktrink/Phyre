@@ -2,6 +2,9 @@
 
 > Please note that I have no plans to support any version of PHP less than 5.3
 
+> Also, please note that this is *entirely beta* at the moment. As time goes on,
+I hope that it will only continue to get better and better.
+
 I've used PHP for a damn long time, and I've loved it. I recently moved over to
 JavaScript and started having fun with it. Over the time that I was messing with
 JavaScript, I noticed that it seemed much easier to work with than PHP, and
