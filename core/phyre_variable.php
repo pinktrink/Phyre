@@ -151,7 +151,8 @@ class variable implements \ArrayAccess{
 		'up', 'dn',
 		
 		'length', 'len', 'count', 'sizeof', 'size',
-		'shuffle'
+		'shuffle',
+		'pos'
 	);
 	
 	
@@ -1683,7 +1684,7 @@ class variable implements \ArrayAccess{
 		}
 	}
 	
-	public function replace(){
+	/*public function replace(){
 		if(!$this->needs(self::SCALAR | self::ARR)) return false;
 		
 		switch($this->type()){
@@ -1693,29 +1694,30 @@ class variable implements \ArrayAccess{
 			case self::ARR:
 				break;
 		}
-	}
+	}*/
 	
 	public function shuffle(){
 		if(!$this->needs(self::SCALAR | self::ARR)) return false;
 		
 		switch($this->type()){
 			case self::SCALAR:
-				break;
+				return new self(str_shuffle($this->_data));
 			
 			case self::ARR:
-				break;
+				shuffle($this->_data);
+				return $this;
 		}
 	}
 	
-	public function pos(){
+	public function pos($needle = NULL, $offset = 0){
 		if(!$this->needs(self::SCALAR | self::ARR)) return false;
 		
 		switch($this->type()){
 			case self::SCALAR:
-				break;
+				return new self(strpos($this->_data, $needle, $offset));
 			
 			case self::ARR:
-				break;
+				return new self(pos($this->_data));
 		}
 	}
 	
