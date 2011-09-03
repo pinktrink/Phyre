@@ -2124,7 +2124,12 @@ class variable implements \ArrayAccess{
 						return new self(end($this->_data));
 					
 					case '~':
-						return new self(each($this->_data));
+						$each = each($this->_data);
+						if($each){
+							return new self($each);
+						}else{
+							return NULL;
+						}
 					
 					case '*':
 						return new self(key($this->_data));
