@@ -763,7 +763,13 @@ class variable implements \ArrayAccess{
 	public function each(){
 		if(!$this->needs(self::ARR)) return false;
 		
-		return new self(each($this->_data));
+		$each = each($this->_data);
+		
+		if($each){
+			return new self($each);
+		}else{
+			return NULL;
+		}
 	}
 	
 	public function end(){
@@ -2052,17 +2058,26 @@ class variable implements \ArrayAccess{
 			return true;
 		}
 		
-		switch($type){
-			case self::NUMERIC:
-				if($this->is_numeric()){
-					return true;
-				}
-				break;
+		if($type & self::NUMERIC && $this->is_numeric()){
+			return true;
 		}
 		
-		throw new \Exception("Not right");
+		throw new \Exception('The current types of this Phyre object are [' . join(' ', $this->alltypes()) . "]\n" . 'It requires at least one of [' . 'a' . '] to use x on line y.');
 		
 		return false;
+	}
+	
+	protected function alltypes(){
+		$ret = array();
+		
+		array_push($ret, self::$_strict_types[$this->type()]);
+		
+		$this->is_numeric() && array_push($ret, "numeric");
+		$this->is_scalar() && array_push($ret, "scalar");
+		$this->is_traversable() && array_push($ret, "traversable");
+		$this->is_callable() && array_push($ret, "callable");
+		
+		return $ret;
 	}
 	
 	protected function modifies($method){
@@ -2079,6 +2094,12 @@ class variable implements \ArrayAccess{
 	
 	public function _(){
 		return $this->_data;
+	}
+	
+	public function __(){
+		echo $this->_data;
+		
+		return $this;
 	}
 	
 	public function assign(&$var){
@@ -2125,6 +2146,7 @@ class variable implements \ArrayAccess{
 					
 					case '~':
 						$each = each($this->_data);
+						
 						if($each){
 							return new self($each);
 						}else{
@@ -2206,15 +2228,13 @@ class variable implements \ArrayAccess{
 		if(!$this->is_scalar()){
 			return $this->_data[$offset] = $value;
 		}else{
-			$len = strlen($this->_data);
-			
 			if(in_array($offset, array('>', '.', '+', '>>'))){
 				$this->_data .= $value;
 				return $this;
 			}elseif(in_array($offset, array('<', '<<'))){
 				$this->_data = $value . $this->_data;
 				return $this;
-			}elseif(is_int($offset) && $offset <= $len){
+			}elseif(is_int($offset) && $offset <= strlen($this->_data)){
 				return $this->_data = substr_replace($this->_data, $value, $offset, 1);
 			}
 		}
