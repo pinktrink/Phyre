@@ -41,8 +41,7 @@ eliminate some of the tendencies that PHP has to quickly turn into spaghetti
 code. So I made PHP Phyre. Here's that same bit from above, using PHP Phyre:
 
 ```php
-include 'phyre/phyre.php'
-use Phyre\variable;
+include 'phyre/phyre.php';
 
 $foo = p('foo bar baz')->split(' ')->i(1)->replace('b', 'f')->_ . ' better';
 //$foo = 'far better'
@@ -129,8 +128,6 @@ trying to explain it, I'll just jump straight into it:
 
 ```php
 include 'phyre/phyre.php';
-use Phyre/variable;
-use Phyre/regex;
 
 $foo = r('/abc?d*e+fg/i');
 $foo->match('ABeFg');  //returns true
@@ -341,4 +338,4 @@ $bar->_;  //returns 'hello'
 ### Care enough to donate?
 
 Too bad, I won't accept donations for this. Go buy yourself a good beer, sit
-down, enjoy it, and set your code on Phyre.
+down, enjoy it, and write some awesome code.
