@@ -790,7 +790,7 @@ class variable implements \ArrayAccess, \Iterator, \Countable{
 		}
 		
 		$x_e70c4df10ef0983b9c8c31bd06b2a2c3 = call_user_func_array('extract', $x_13bbacf888ef2758e2a4d2fec38d475f);  //Extract variables from $this->_data into the current scope
-		$x_787ef08a9498c6398a41148ca8c276fe = get_defined_vars();  //Get all the defined vars in this scope (to include extracted globals)
+		$x_787ef08a9498c6398a41148ca8c276fe = array_merge(get_defined_vars(), $GLOBALS);  //Get all the defined vars in this scope (to include extracted globals)
 		
 		$GLOBALS = array_diff_key($x_787ef08a9498c6398a41148ca8c276fe, array('x_975fb664ba3a8450968b9daf0e6f8ec9' => '', 'x_851f5ac9941d720844d143ed9cfcf60a' => '', 'x_787ef08a9498c6398a41148ca8c276fe' => '', 'x_e70c4df10ef0983b9c8c31bd06b2a2c3' => '', 'x_13bbacf888ef2758e2a4d2fec38d475f' => ''));  //Remove variables set in this scope
 		
