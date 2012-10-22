@@ -18,7 +18,7 @@ function Phyre(){
 }
 
 function p(){
-	return call_user_func_array('Phyre\Phyre', func_get_args());
+	return call_user_func_array('Phyre', func_get_args());
 }
 
 function regex(){
@@ -32,6 +32,6 @@ function regex(){
 }
 
 function r(){
-	return call_user_func_array('Phyre\regex', func_get_args());
+	return call_user_func_array('regex', func_get_args());
 }
 ?>

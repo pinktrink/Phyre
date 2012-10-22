@@ -1,4 +1,4 @@
-<?php
+9<?php
 /*
 pad > array, string
 length > array, string
@@ -20,7 +20,7 @@ replace needs to hold preg_replace, str_replace, str_ireplace, and array_replace
 
 namespace Phyre;
 
-class variable implements \ArrayAccess{
+class variable implements \ArrayAccess, \Iterator, \Countable{
 	const NIL = 1;
 	const BOOL = 2;
 	const BOOLEAN = 2;
@@ -754,11 +754,11 @@ class variable implements \ArrayAccess{
 		return new self(asort($this->_data, $sort_flags));
 	}
 	
-	public function current(){
-		if(!$this->needs(self::ARR)) return false;
+	// public function current(){
+	// 	if(!$this->needs(self::ARR)) return false;
 		
-		return new self(current($this->_data));
-	}
+	// 	return new self(current($this->_data));
+	// }
 	
 	public function each(){
 		if(!$this->needs(self::ARR)) return false;
@@ -827,11 +827,11 @@ class variable implements \ArrayAccess{
 		return new self(join($glue, $this->_data));
 	}
 	
-	public function key(){
-		if(!$this->needs(self::ARR)) return false;
+	// public function key(){
+	// 	if(!$this->needs(self::ARR)) return false;
 		
-		return new self(key($this->_data));
-	}
+	// 	return new self(key($this->_data));
+	// }
 	
 	public function krsort($sort_flags = SORT_REGULAR){
 		if(!$this->needs(self::ARR)) return false;
@@ -857,11 +857,11 @@ class variable implements \ArrayAccess{
 		return new self(natsort($this->_data));
 	}
 	
-	public function next(){
-		if(!$this->needs(self::ARR)) return false;
+	// public function next(){
+	// 	if(!$this->needs(self::ARR)) return false;
 		
-		return new self(next($this->_data));
-	}
+	// 	return new self(next($this->_data));
+	// }
 	
 	public function prev(){
 		if(!$this->needs(self::ARR)) return false;
@@ -1039,6 +1039,14 @@ class variable implements \ArrayAccess{
 		$handle = array_shift($args);
 		
 		return new self(call_user_func_array('fprintf', array_merge(array($handle, $this->_data), $args)));
+	}
+	
+	public function hash($algo, $raw_output = false){
+		if(!$this->needs(self::SCALAR)) return false;
+		
+		$args = func_get_args();
+		
+		return new self(hash($algo, $this->_data, $raw_output));
 	}
 	
 	public function hebrev($max_chars_per_line = 0){
@@ -1655,17 +1663,17 @@ class variable implements \ArrayAccess{
 		}
 	}
 	
-	public function count(){
-		if(!$this->needs(self::SCALAR | self::ARR)) return false;
+	// public function count(){
+	// 	if(!$this->needs(self::SCALAR | self::ARR)) return false;
 		
-		switch($this->type()){
-			case self::SCALAR:
-				return new self(strlen($this->_data));
+	// 	switch($this->type()){
+	// 		case self::SCALAR:
+	// 			return new self(strlen($this->_data));
 			
-			case self::ARR:
-				return new self(count($this->_data));
-		}
-	}
+	// 		case self::ARR:
+	// 			return new self(count($this->_data));
+	// 	}
+	// }
 	
 	public function sizeof(){
 		if(!$this->needs(self::SCALAR | self::ARR)) return false;
@@ -2254,6 +2262,58 @@ class variable implements \ArrayAccess{
 		}
 		
 		return true;
+	}
+	
+	
+	
+	public function current(){
+		if($this->is_array()){
+			return current($this->_data);
+		}
+		
+		return NULL;
+	}
+	
+	public function key(){
+		if($this->is_array()){
+			return key($this->_data);
+		}
+		
+		return NULL;
+	}
+	
+	public function next(){
+		if($this->is_array()){
+			return next($this->_data);
+		}
+		
+		return NULL;
+	}
+	
+	public function rewind(){
+		if($this->is_array()){
+			return reset($this->_data);
+		}
+		
+		return NULL;
+	}
+	
+	public function valid(){
+		if($this->is_array()){
+			$ret = next($this->_data);
+			
+			prev($this->_data);
+			
+			return (boolean)$ret;
+		}
+		
+		return NULL;
+	}
+	
+	
+	
+	public function count(){
+		return count($this->_data);
 	}
 }
 ?>
