@@ -1,6 +1,6 @@
 <?php
-include 'phyre_variable.php';
-include 'phyre_regex.php';
+require 'phyre_variable.php';
+require 'phyre_regex.php';
 
 function Phyre(){
 	$ret = array();
