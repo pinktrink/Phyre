@@ -1,4 +1,4 @@
-9<?php
+<?php
 /*
 pad > array, string
 length > array, string
