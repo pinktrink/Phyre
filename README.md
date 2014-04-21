@@ -275,7 +275,7 @@ $foo->_;  //returns 'hello world'
 You can prepend strings in this way:
 
 ```php
-$foo = ('world');
+$foo = p('world');
 $foo['<'] = 'lo ';
 $foo['<<'] = 'hel';
 $foo->_;  //returns 'hello world'
